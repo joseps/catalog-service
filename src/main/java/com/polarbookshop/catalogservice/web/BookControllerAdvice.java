@@ -1,5 +1,8 @@
 package com.polarbookshop.catalogservice.web;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.polarbookshop.catalogservice.domain.BookAlreadyExistsException;
 import com.polarbookshop.catalogservice.domain.BookNotFoundException;
 import org.springframework.http.HttpStatus;
@@ -14,6 +17,8 @@ import java.util.Map;
 
 @RestControllerAdvice
 public class BookControllerAdvice {
+
+    private static final Logger log = LoggerFactory.getLogger(BookControllerAdvice.class);
 
     @ExceptionHandler(BookNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
@@ -35,6 +40,7 @@ public class BookControllerAdvice {
             String fieldName = ((FieldError) error).getField();
             String errorMessage = error.getDefaultMessage();
             errors.put(fieldName, errorMessage);
+            log.info("{} caused {}", fieldName, errorMessage);
         });
         return errors;
     }
