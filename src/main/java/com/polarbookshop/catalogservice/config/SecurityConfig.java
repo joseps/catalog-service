@@ -19,14 +19,16 @@ public class SecurityConfig {
 
 	@Bean
 	SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-		http.oauth2ResourceServer( c ->
-			c.jwt(Customizer.withDefaults())
-		);
+//		http.oauth2ResourceServer( c ->
+//			c.jwt(Customizer.withDefaults())
+//		);
 		return http
 			.authorizeHttpRequests(authorize -> authorize
+				.requestMatchers("/actuator/**").permitAll()
 				.requestMatchers(HttpMethod.GET, "/", "/books/**").permitAll()
 				.anyRequest().hasRole("employee")
 			)
+			.oauth2ResourceServer(c -> c.jwt(Customizer.withDefaults()))
 			.sessionManagement(sessionManagement ->	sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 			.csrf(AbstractHttpConfigurer::disable)
 			.build();
